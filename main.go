@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/bwmarrin/discordgo"
@@ -9,9 +10,7 @@ import (
 )
 
 var (
-	botId      string
-	bot        *discordgo.Session
-	voiceState map[string]string
+	bot *discordgo.Session
 )
 
 func main() {
@@ -31,16 +30,16 @@ func main() {
 		return
 	}
 
-	u, err := bot.User("@me")
+	_, err = bot.User("@me")
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	botId = u.ID
+	// botId = u.ID
 
-	// bot.AddHandler(ready)
+	bot.AddHandler(ready)
 
 	err = bot.Open()
 
@@ -50,4 +49,9 @@ func main() {
 	}
 
 	<-make(chan struct{})
+}
+
+func ready(s *discordgo.Session, m *discordgo.Ready) {
+	log.Printf("%s %v", "momoko is ready, latency:", bot.HeartbeatLatency())
+	s.UpdateGameStatus(0, "劍與魔法王國")
 }
